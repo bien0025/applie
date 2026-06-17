@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppShell from './components/layout/AppShell';
 import Dashboard from './pages/Dashboard';
 import Applications from './pages/Applications';
+import Tasks from './pages/Tasks';
 import AddJob from './pages/AddJob';
 import ResumeVault from './pages/ResumeVault';
 import Settings from './pages/Settings';
@@ -15,6 +16,7 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route index element={<Dashboard />} />
           <Route path="applications" element={<Applications />} />
+          <Route path="tasks" element={<Tasks />} />
           <Route path="add" element={<AddJob />} />
           <Route path="resumes" element={<ResumeVault />} />
           <Route path="settings" element={<Settings />} />

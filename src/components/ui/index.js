@@ -8,6 +8,7 @@ export { default as Card } from './Card';
 export { default as Divider } from './Divider';
 export { default as Field } from './Field';
 export { default as Input } from './Input';
+export { default as Modal } from './Modal';
 export { default as PageHeader } from './PageHeader';
 export { default as ProgressBar } from './ProgressBar';
 export { default as Select } from './Select';

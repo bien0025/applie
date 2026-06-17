@@ -1,17 +1,19 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import Topbar from './Topbar';
 
-// Global shell: fixed sidebar + scrollable main content viewport.
+// Global shell: fixed sidebar + (top bar over a scrollable content viewport).
 // Pages render into <Outlet /> via the router.
 export default function AppShell() {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen bg-background">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-6xl px-8 py-8">
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <Topbar />
+        <main className="flex-1 overflow-y-auto px-8 py-8">
           <Outlet />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

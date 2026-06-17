@@ -1,6 +1,7 @@
 import {
   LayoutDashboard,
   Briefcase,
+  ListTodo,
   PlusCircle,
   FileText,
   Settings,
@@ -11,6 +12,7 @@ import {
 export const NAV_ITEMS = [
   { label: 'Dashboard', path: '/', icon: LayoutDashboard },
   { label: 'Applications', path: '/applications', icon: Briefcase },
+  { label: 'Tasks', path: '/tasks', icon: ListTodo },
   { label: 'Add Job', path: '/add', icon: PlusCircle },
   { label: 'Resume Vault', path: '/resumes', icon: FileText },
   { label: 'Settings', path: '/settings', icon: Settings },
