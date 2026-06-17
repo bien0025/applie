@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Design system tokens.
+  Light values live on :root, dark values override on .dark.
+  Tailwind maps these to color/shadow names (bg-background, bg-card,
+  border-border, text-primary, shadow-md, …) in tailwind.config.js,
+  so components stay clean — no dark: variants for core surfaces.
+*/
+:root {
+  /* Surfaces + text */
+  --color-bg: #fafaf9;
+  --color-bg-raised: #ffffff;
+  --color-border: #e7e5e4;
+  --color-border-strong: #d6d3d1;
+  --color-text-subtle: #a8a29e;
+  --color-text-secondary: #78716c;
+  --color-text-primary: #1c1917;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.06);
+  --shadow-md: 0 2px 8px rgba(28, 25, 23, 0.08), 0 1px 2px rgba(28, 25, 23, 0.04);
+  --shadow-lg: 0 8px 24px rgba(28, 25, 23, 0.1), 0 2px 6px rgba(28, 25, 23, 0.06);
+  --shadow-xl: 0 20px 48px rgba(28, 25, 23, 0.12), 0 4px 12px rgba(28, 25, 23, 0.06);
+}
+
+.dark {
+  --color-bg: #111110;
+  --color-bg-raised: #1c1917;
+  --color-border: #292524;
+  --color-border-strong: #44403c;
+  --color-text-subtle: #57534e;
+  --color-text-secondary: #a8a29e;
+  --color-text-primary: #f5f5f4;
+
+  /* Shadows deepen on dark backgrounds */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-primary font-sans antialiased;
+    font-weight: 400;
+  }
+}
