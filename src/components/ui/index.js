@@ -11,6 +11,7 @@ export { default as Input } from './Input';
 export { default as Modal } from './Modal';
 export { default as PageHeader } from './PageHeader';
 export { default as ProgressBar } from './ProgressBar';
+export { default as SearchInput } from './SearchInput';
 export { default as Select } from './Select';
 export { default as StatCard } from './StatCard';
 export { default as Switch } from './Switch';

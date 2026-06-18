@@ -5,7 +5,7 @@ import Input from '../ui/Input';
 import Select from '../ui/Select';
 import Textarea from '../ui/Textarea';
 import { useTasks } from '../../context/TasksContext';
-import { applications } from '../../data/applications';
+import { useApplications } from '../../context/ApplicationsContext';
 import { REMINDER_PRESETS, computeRemindAt } from '../../lib/reminders';
 
 const EMPTY = {
@@ -21,6 +21,7 @@ const EMPTY = {
 // preset or custom reminder time.
 export default function TaskModal({ open, onClose }) {
   const { addTask } = useTasks();
+  const { applications } = useApplications();
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState('');
 

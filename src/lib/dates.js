@@ -38,6 +38,18 @@ export function formatDateTime(iso) {
   });
 }
 
+// "Oct 12" — month + day, for things like Date Applied.
+// Date-only strings (YYYY-MM-DD) are parsed as local time, not UTC,
+// so the day doesn't shift backwards in western timezones.
+export function formatShortDate(iso) {
+  if (!iso) return '';
+  const date = new Date(iso.includes('T') ? iso : `${iso}T00:00:00`);
+  return date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: '2-digit',
+  });
+}
+
 // Build a value for <input type="datetime-local"> from `daysFromNow`.
 export function isoDaysFromNow(daysFromNow, hour = 10) {
   const d = new Date();

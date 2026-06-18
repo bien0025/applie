@@ -5,6 +5,7 @@ import Applications from './pages/Applications';
 import Tasks from './pages/Tasks';
 import AddJob from './pages/AddJob';
 import ResumeVault from './pages/ResumeVault';
+import Archived from './pages/Archived';
 import Settings from './pages/Settings';
 import UIKit from './pages/UIKit';
 
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="tasks" element={<Tasks />} />
           <Route path="add" element={<AddJob />} />
           <Route path="resumes" element={<ResumeVault />} />
+          <Route path="archived" element={<Archived />} />
           <Route path="settings" element={<Settings />} />
           {/* Internal design system reference, not in the sidebar */}
           <Route path="kit" element={<UIKit />} />

@@ -5,17 +5,18 @@ import ActionCard from '../components/dashboard/ActionCard';
 import TaskModal from '../components/tasks/TaskModal';
 import Button from '../components/ui/Button';
 import { useTasks } from '../context/TasksContext';
-import { getApplication } from '../data/applications';
+import { useApplications } from '../context/ApplicationsContext';
 import { formatRelativeDay } from '../lib/dates';
 import { dashboardStats } from '../data/dashboard';
 
 export default function Dashboard() {
   const { tasks, resolveTask } = useTasks();
+  const { getApplication } = useApplications();
   const [taskModalOpen, setTaskModalOpen] = useState(false);
 
-  // Open tasks, soonest due first.
+  // Open (non-archived) tasks, soonest due first.
   const openTasks = tasks
-    .filter((t) => t.status === 'open')
+    .filter((t) => !t.archived && t.status === 'open')
     .sort((a, b) => new Date(a.dueAt || 0) - new Date(b.dueAt || 0));
 
   return (

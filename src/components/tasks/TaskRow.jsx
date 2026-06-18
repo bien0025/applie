@@ -1,11 +1,14 @@
-import { Circle, CheckCircle2, Bell } from 'lucide-react';
+import { Circle, CheckCircle2, Bell, Archive, RotateCcw } from 'lucide-react';
 import { cn } from '../../lib/cn';
-import { getApplication } from '../../data/applications';
+import { useApplications } from '../../context/ApplicationsContext';
 import { formatRelativeDay, formatDateTime } from '../../lib/dates';
 import { REMINDER_PRESETS } from '../../lib/reminders';
 
-// One task in the list: complete toggle, title, linked app, due + reminder.
-export default function TaskRow({ task, onResolve }) {
+// One task in the list: complete toggle, title, linked app, due + reminder,
+// and a quick archive/restore button.
+// `highlighted` + `rowRef` are used when arriving from global search.
+export default function TaskRow({ task, onToggle, onArchive, onRestore, highlighted, rowRef }) {
+  const { getApplication } = useApplications();
   const app = getApplication(task.applicationId);
   const done = task.status === 'done';
 
@@ -18,12 +21,18 @@ export default function TaskRow({ task, onResolve }) {
     : null;
 
   return (
-    <div className="flex items-start gap-3 rounded-lg border border-border bg-card px-4 py-3">
+    <div
+      ref={rowRef}
+      className={cn(
+        'flex items-start gap-3 rounded-lg border bg-card px-4 py-3',
+        highlighted ? 'border-accent bg-accent/10' : 'border-border'
+      )}
+    >
+      {/* Complete toggle — click to mark done, click again to reopen */}
       <button
         type="button"
-        onClick={() => onResolve(task.id)}
-        disabled={done}
-        aria-label={done ? 'Completed' : 'Mark as done'}
+        onClick={() => onToggle(task.id)}
+        aria-label={done ? 'Reopen task' : 'Mark as done'}
         className="mt-0.5 flex-shrink-0"
       >
         {done ? (
@@ -43,9 +52,7 @@ export default function TaskRow({ task, onResolve }) {
           {task.title}
         </h3>
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-ui text-xs text-secondary">
-          <span>
-            {app ? `${app.company} · ${app.role}` : 'Standalone task'}
-          </span>
+          <span>{app ? `${app.company} · ${app.role}` : 'Standalone task'}</span>
           {task.dueAt && <span>Due {formatRelativeDay(task.dueAt)}</span>}
           {reminderText && (
             <span className="inline-flex items-center gap-1 text-subtle">
@@ -54,6 +61,29 @@ export default function TaskRow({ task, onResolve }) {
           )}
         </div>
       </div>
+
+      {/* Quick archive / restore */}
+      {task.archived ? (
+        <button
+          type="button"
+          title="Restore"
+          aria-label="Restore"
+          onClick={() => onRestore(task.id)}
+          className="mt-0.5 grid h-7 w-7 flex-shrink-0 place-items-center rounded text-subtle transition-colors hover:bg-background hover:text-primary"
+        >
+          <RotateCcw size={15} />
+        </button>
+      ) : (
+        <button
+          type="button"
+          title="Archive"
+          aria-label="Archive"
+          onClick={() => onArchive(task.id)}
+          className="mt-0.5 grid h-7 w-7 flex-shrink-0 place-items-center rounded text-subtle transition-colors hover:bg-background hover:text-primary"
+        >
+          <Archive size={15} />
+        </button>
+      )}
     </div>
   );
 }

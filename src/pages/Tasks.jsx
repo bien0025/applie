@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import Button from '../components/ui/Button';
@@ -11,22 +12,45 @@ const FILTERS = [
   { value: 'open', label: 'Open' },
   { value: 'done', label: 'Done' },
   { value: 'all', label: 'All' },
+  { value: 'archived', label: 'Archived' },
 ];
 
 export default function Tasks() {
-  const { tasks, resolveTask } = useTasks();
-  const [filter, setFilter] = useState('open');
+  const { tasks, toggleTask, archiveTask, restoreTask } = useTasks();
+  const [params] = useSearchParams();
+  const focusId = params.get('focus');
+
+  // When arriving via global search, show "All" so the task is visible.
+  const [filter, setFilter] = useState(focusId ? 'all' : 'open');
   const [modalOpen, setModalOpen] = useState(false);
 
+  const focusRef = useRef(null);
+  useEffect(() => {
+    if (focusId && focusRef.current) {
+      focusRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }, [focusId]);
+
   const counts = {
-    open: tasks.filter((t) => t.status === 'open').length,
-    done: tasks.filter((t) => t.status === 'done').length,
-    all: tasks.length,
+    open: tasks.filter((t) => !t.archived && t.status === 'open').length,
+    done: tasks.filter((t) => !t.archived && t.status === 'done').length,
+    all: tasks.filter((t) => !t.archived).length,
+    archived: tasks.filter((t) => t.archived).length,
   };
 
   const visible = tasks
-    .filter((t) => filter === 'all' || t.status === filter)
+    .filter((t) => {
+      if (filter === 'archived') return t.archived;
+      if (t.archived) return false;
+      if (filter === 'all') return true;
+      return t.status === filter;
+    })
     .sort((a, b) => new Date(a.dueAt || 0) - new Date(b.dueAt || 0));
+
+  const emptyMessage = {
+    done: 'No completed tasks yet.',
+    archived: 'No archived tasks.',
+  }[filter] || 'No tasks here — create one to get started.';
 
   return (
     <>
@@ -37,7 +61,7 @@ export default function Tasks() {
       </PageHeader>
 
       {/* Filters */}
-      <div className="mb-5 flex items-center gap-2">
+      <div className="mb-5 flex flex-wrap items-center gap-2">
         {FILTERS.map((f) => (
           <Tag
             key={f.value}
@@ -54,14 +78,20 @@ export default function Tasks() {
       {visible.length > 0 ? (
         <div className="flex flex-col gap-2">
           {visible.map((task) => (
-            <TaskRow key={task.id} task={task} onResolve={resolveTask} />
+            <TaskRow
+              key={task.id}
+              task={task}
+              onToggle={toggleTask}
+              onArchive={archiveTask}
+              onRestore={restoreTask}
+              highlighted={task.id === focusId}
+              rowRef={task.id === focusId ? focusRef : null}
+            />
           ))}
         </div>
       ) : (
         <div className="rounded-xl border border-border bg-card px-6 py-12 text-center text-sm text-secondary">
-          {filter === 'done'
-            ? 'No completed tasks yet.'
-            : 'No tasks here — create one to get started.'}
+          {emptyMessage}
         </div>
       )}
 
