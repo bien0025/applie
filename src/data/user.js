@@ -1,5 +1,6 @@
-// Mock signed-in user — shown in the top bar. Replaced by Supabase auth later.
+// Mock signed-in user — shown in the top bar + Settings. Supabase auth later.
 export const currentUser = {
-  name: 'Alex Rivera',
+  firstName: 'Alex',
+  lastName: 'Rivera',
   email: 'alex@example.com',
 };

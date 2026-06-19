@@ -5,7 +5,7 @@ import SearchInput from '../ui/SearchInput';
 import StatusBadge from '../applications/StatusBadge';
 import { useApplications } from '../../context/ApplicationsContext';
 import { useTasks } from '../../context/TasksContext';
-import { resumes } from '../../data/resumes';
+import { useResumes } from '../../context/ResumesContext';
 
 const MAX_PER_GROUP = 4;
 
@@ -46,6 +46,7 @@ export default function GlobalSearch() {
   const navigate = useNavigate();
   const { applications, getApplication } = useApplications();
   const { tasks } = useTasks();
+  const { resumes } = useResumes();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -62,7 +63,7 @@ export default function GlobalSearch() {
     ? tasks.filter((t) => !t.archived && match(t.title)).slice(0, MAX_PER_GROUP)
     : [];
   const resumeResults = q
-    ? resumes.filter((r) => match(`${r.name} ${r.label}`)).slice(0, MAX_PER_GROUP)
+    ? resumes.filter((r) => match(r.fileName)).slice(0, MAX_PER_GROUP)
     : [];
 
   const hasResults =
@@ -138,8 +139,8 @@ export default function GlobalSearch() {
                       key={r.id}
                       icon={FileText}
                       onClick={() => go(`/resumes?focus=${r.id}`)}
-                      primary={r.name}
-                      secondary={r.label}
+                      primary={r.fileName}
+                      secondary="Resume"
                     />
                   ))}
                 </Group>

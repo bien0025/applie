@@ -7,6 +7,7 @@ const VARIANTS = {
     'bg-card text-primary border-[1.5px] border-border shadow-sm hover:border-border-strong',
   ghost: 'bg-transparent text-secondary hover:bg-border hover:text-primary',
   danger: 'bg-error text-white hover:opacity-90',
+  dark: 'bg-[#1C1917] text-white hover:bg-[#292524]',
 };
 
 const SIZES = {

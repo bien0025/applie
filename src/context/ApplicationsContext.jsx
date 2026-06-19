@@ -21,9 +21,22 @@ export function ApplicationsProvider({ children }) {
   const restore = (id) => patch(id, { archived: false });
   const getApplication = (id) => applications.find((a) => a.id === id);
 
+  const addApplication = (app) =>
+    setApplications((prev) => [
+      {
+        id: crypto.randomUUID(),
+        status: 'Applied',
+        archived: false,
+        dateApplied: new Date().toISOString().slice(0, 10),
+        location: '', salary: '', platform: '', description: '', url: '', notes: '',
+        ...app,
+      },
+      ...prev,
+    ]);
+
   return (
     <ApplicationsContext.Provider
-      value={{ applications, updateStatus, archive, restore, getApplication }}
+      value={{ applications, addApplication, updateStatus, archive, restore, getApplication }}
     >
       {children}
     </ApplicationsContext.Provider>

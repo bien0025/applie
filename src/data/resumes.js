@@ -1,25 +1,22 @@
-// Mock resume versions for the Resume Vault + global search.
+// Seed resumes — loaded into ResumesContext. Sizes are in bytes.
 // Will come from Supabase storage once the backend is wired up.
-export const resumes = [
+export const seedResumes = [
   {
     id: 'r1',
-    name: 'Frontend Engineer Resume',
-    label: 'React / TypeScript focus',
-    fileName: 'frontend-engineer-v3.pdf',
-    updated: '2025-10-14',
+    fileName: 'Frontend_Engineer_Resume_v3.pdf',
+    size: Math.round(1.2 * 1024 * 1024),
+    uploadedAt: '2023-10-18',
   },
   {
     id: 'r2',
-    name: 'Product Designer Resume',
-    label: 'Design systems focus',
-    fileName: 'product-designer-v2.pdf',
-    updated: '2025-09-30',
+    fileName: 'UX_Design_Portfolio_Resume.pdf',
+    size: Math.round(2.5 * 1024 * 1024),
+    uploadedAt: '2023-09-24',
   },
   {
     id: 'r3',
-    name: 'General Resume',
-    label: 'All-purpose',
-    fileName: 'general-resume.pdf',
-    updated: '2025-08-21',
+    fileName: 'General_Software_Dev_v1.pdf',
+    size: Math.round(1.1 * 1024 * 1024),
+    uploadedAt: '2023-08-10',
   },
 ];

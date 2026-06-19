@@ -48,22 +48,33 @@ export default function JobDetailModal({ app, open, onClose }) {
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <Meta icon={MapPin}>{app.location}</Meta>
-            <Meta icon={DollarSign}>{app.salary}</Meta>
-            <Meta icon={Globe}>{app.platform}</Meta>
+            {app.location && <Meta icon={MapPin}>{app.location}</Meta>}
+            {app.salary && <Meta icon={DollarSign}>{app.salary}</Meta>}
+            {app.platform && <Meta icon={Globe}>{app.platform}</Meta>}
             <Meta icon={CalendarDays}>
               Applied {formatShortDate(app.dateApplied)}
             </Meta>
           </div>
 
-          <div>
-            <div className="mb-1.5 font-ui text-xs font-semibold uppercase tracking-wide text-subtle">
-              Description
+          {app.description && (
+            <div>
+              <div className="mb-1.5 font-ui text-xs font-semibold uppercase tracking-wide text-subtle">
+                Description
+              </div>
+              <p className="text-sm leading-normal text-secondary">
+                {app.description}
+              </p>
             </div>
-            <p className="text-sm leading-normal text-secondary">
-              {app.description}
-            </p>
-          </div>
+          )}
+
+          {app.notes && (
+            <div>
+              <div className="mb-1.5 font-ui text-xs font-semibold uppercase tracking-wide text-subtle">
+                Notes
+              </div>
+              <p className="text-sm leading-normal text-secondary">{app.notes}</p>
+            </div>
+          )}
         </div>
       )}
     </Modal>

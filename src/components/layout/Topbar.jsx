@@ -10,7 +10,7 @@ export default function Topbar() {
 
       <div className="flex items-center gap-3">
         <span className="text-sm font-medium text-primary">
-          {currentUser.name}
+          {currentUser.firstName} {currentUser.lastName}
         </span>
         <button
           type="button"
