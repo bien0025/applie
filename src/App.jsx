@@ -13,6 +13,8 @@ import UIKit from './pages/UIKit';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import VerifyEmail from './pages/VerifyEmail';
+import Privacy from './pages/Privacy';
+import About from './pages/About';
 
 export default function App() {
   return (
@@ -22,6 +24,8 @@ export default function App() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/about" element={<About />} />
 
         {/* Everything else lives inside the app shell, behind auth */}
         <Route

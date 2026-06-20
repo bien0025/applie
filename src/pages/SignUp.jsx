@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AuthLayout from '../components/auth/AuthLayout';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 export default function SignUp() {
   const { signUp, user } = useAuth();
@@ -28,7 +30,6 @@ export default function SignUp() {
     setError('');
     setInfo('');
     setBusy(true);
-    // The metadata object is stored on user.user_metadata in Supabase.
     const { data, error: signUpError } = await signUp(form.email, form.password, {
       first_name: form.firstName.trim(),
       last_name: form.lastName.trim(),
@@ -38,8 +39,6 @@ export default function SignUp() {
       setError(signUpError.message);
       return;
     }
-    // If email confirmation is required, Supabase returns a user without a session.
-    // Send them to a dedicated screen so they know what to do next.
     if (data?.user && !data?.session) {
       navigate('/verify-email', {
         state: { email: form.email },
@@ -50,76 +49,67 @@ export default function SignUp() {
     navigate('/', { replace: true });
   };
 
-  const fieldClass =
-    'rounded border border-neutral-300 px-3 py-2 text-sm text-black outline-none focus:border-black';
-  const labelClass = 'flex flex-col gap-1.5';
-  const labelText = 'text-xs font-medium text-neutral-700';
-
   return (
     <AuthLayout title="Create account" subtitle="Start tracking your applications.">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-3">
-          <label className={labelClass}>
-            <span className={labelText}>First name</span>
-            <input
-              type="text"
-              required
-              value={form.firstName}
-              onChange={update('firstName')}
-              className={fieldClass}
-            />
-          </label>
-          <label className={labelClass}>
-            <span className={labelText}>Last name</span>
-            <input
-              type="text"
-              required
-              value={form.lastName}
-              onChange={update('lastName')}
-              className={fieldClass}
-            />
-          </label>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Input
+            label="First name"
+            required
+            value={form.firstName}
+            onChange={update('firstName')}
+            placeholder="Obed"
+          />
+          <Input
+            label="Last name"
+            required
+            value={form.lastName}
+            onChange={update('lastName')}
+            placeholder="Bien-Aime"
+          />
         </div>
 
-        <label className={labelClass}>
-          <span className={labelText}>Email</span>
-          <input
-            type="email"
-            required
-            value={form.email}
-            onChange={update('email')}
-            className={fieldClass}
-          />
-        </label>
+        <Input
+          label="Email"
+          type="email"
+          required
+          value={form.email}
+          onChange={update('email')}
+          placeholder="you@example.com"
+        />
 
-        <label className={labelClass}>
-          <span className={labelText}>Password</span>
-          <input
-            type="password"
-            required
-            minLength={6}
-            value={form.password}
-            onChange={update('password')}
-            className={fieldClass}
-          />
-        </label>
+        <Input
+          label="Password"
+          type="password"
+          required
+          minLength={6}
+          value={form.password}
+          onChange={update('password')}
+          placeholder="••••••••"
+        />
 
-        {error && <p className="text-xs text-red-600">{error}</p>}
-        {info && <p className="text-xs text-green-700">{info}</p>}
+        {error && <p className="text-xs text-error">{error}</p>}
+        {info && <p className="text-xs text-success">{info}</p>}
 
-        <button
-          type="submit"
-          disabled={busy}
-          className="mt-2 rounded bg-black px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={busy} className="mt-2 w-full">
           {busy ? 'Creating account…' : 'Create account'}
-        </button>
+        </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-neutral-600">
+      <p className="mt-6 text-center text-sm text-secondary">
         Already have an account?{' '}
-        <Link to="/sign-in" className="font-medium text-black hover:underline">
+        <Link to="/sign-in" className="font-medium text-primary hover:underline">
           Sign in
+        </Link>
+      </p>
+
+      <p className="mt-6 flex items-center justify-center gap-3 text-xs text-subtle">
+        <Link to="/about" className="hover:text-primary hover:underline">
+          About
+        </Link>
+        <span>•</span>
+        <Link to="/privacy" className="hover:text-primary hover:underline">
+          Privacy policy
         </Link>
       </p>
     </AuthLayout>

@@ -6,6 +6,8 @@ extension that grabs job postings in one click.
 
 🌐 **Live:** [applie.vercel.app](https://applie.vercel.app)
 
+🔒 **Privacy policy:** [https://applie.vercel.app/privacy](https://applie.vercel.app/privacy)
+
 ---
 
 ## What it does
@@ -24,6 +26,18 @@ extension that grabs job postings in one click.
 - **Archived** — soft-deleted apps & tasks (we never actually delete)
 - **Settings** — profile, email notification preferences
 - **Global search** across applications, tasks, and resumes (top bar)
+
+---
+
+## Privacy pages for the Chrome extension
+
+Use these public pages in the Web Store listing:
+
+- Privacy policy: `https://applie.vercel.app/privacy`
+- About page: `https://applie.vercel.app/about`
+
+These pages explain what the app stores, what the extension reads, and how
+Supabase / Resend / SiliconFlow are used.
 
 ---
 

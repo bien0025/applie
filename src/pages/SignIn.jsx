@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AuthLayout from '../components/auth/AuthLayout';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 export default function SignIn() {
   const { signIn, user } = useAuth();
@@ -11,7 +13,6 @@ export default function SignIn() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
-  // Already signed in? Bounce to the app.
   useEffect(() => {
     if (user) navigate('/', { replace: true });
   }, [user, navigate]);
@@ -32,43 +33,45 @@ export default function SignIn() {
   return (
     <AuthLayout title="Sign in" subtitle="Welcome back to Applie.">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <label className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-neutral-700">Email</span>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="rounded border border-neutral-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
-          />
-        </label>
+        <Input
+          label="Email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+        />
 
-        <label className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-neutral-700">Password</span>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="rounded border border-neutral-300 px-3 py-2 text-sm text-black outline-none focus:border-black"
-          />
-        </label>
+        <Input
+          label="Password"
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="••••••••"
+        />
 
-        {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs text-error">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={busy}
-          className="mt-2 rounded bg-black px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800 disabled:opacity-50"
-        >
+        <Button type="submit" disabled={busy} className="mt-2 w-full">
           {busy ? 'Signing in…' : 'Sign in'}
-        </button>
+        </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-neutral-600">
-        Don't have an account?{' '}
-        <Link to="/sign-up" className="font-medium text-black hover:underline">
+      <p className="mt-6 text-center text-sm text-secondary">
+        Don&apos;t have an account?{' '}
+        <Link to="/sign-up" className="font-medium text-primary hover:underline">
           Sign up
+        </Link>
+      </p>
+
+      <p className="mt-6 flex items-center justify-center gap-3 text-xs text-subtle">
+        <Link to="/about" className="hover:text-primary hover:underline">
+          About
+        </Link>
+        <span>•</span>
+        <Link to="/privacy" className="hover:text-primary hover:underline">
+          Privacy policy
         </Link>
       </p>
     </AuthLayout>
