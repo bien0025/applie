@@ -5,7 +5,7 @@ import ApplicationRowMenu from './ApplicationRowMenu';
 import { cn } from '../../lib/cn';
 import { formatShortDate } from '../../lib/dates';
 
-const COLUMNS = ['Company', 'Role', 'Status', 'Date Applied'];
+const COLUMNS = ['Company', 'Role', 'Status', 'Date Applied', 'Salary', 'Location'];
 
 // The applications list as a table.
 //  - Rows are clickable (onRowClick) to open the job detail.
@@ -36,7 +36,7 @@ export default function ApplicationsTable({
             {COLUMNS.map((col) => (
               <th
                 key={col}
-                className="px-5 py-3 font-ui text-xs font-semibold uppercase tracking-wide text-subtle"
+                className="whitespace-nowrap px-5 py-3 font-ui text-xs font-semibold uppercase tracking-wide text-subtle"
               >
                 {col}
               </th>
@@ -65,6 +65,12 @@ export default function ApplicationsTable({
               </td>
               <td className="px-5 py-4 text-sm text-secondary">
                 {formatShortDate(app.dateApplied)}
+              </td>
+              <td className="px-5 py-4 text-sm text-secondary">
+                {app.salary || <span className="text-subtle">—</span>}
+              </td>
+              <td className="px-5 py-4 text-sm text-secondary">
+                {app.location || <span className="text-subtle">—</span>}
               </td>
               <td
                 className="px-5 py-4"

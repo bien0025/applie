@@ -2,17 +2,34 @@ import { useState } from 'react';
 import { Bell, Plus } from 'lucide-react';
 import StatTile from '../components/dashboard/StatTile';
 import ActionCard from '../components/dashboard/ActionCard';
+import ActivityChart from '../components/dashboard/ActivityChart';
 import TaskModal from '../components/tasks/TaskModal';
 import Button from '../components/ui/Button';
 import { useTasks } from '../context/TasksContext';
 import { useApplications } from '../context/ApplicationsContext';
 import { formatRelativeDay } from '../lib/dates';
-import { dashboardStats } from '../data/dashboard';
+
+const ACTIVE_STATUSES = ['Applied', 'Interview', 'Offer'];
 
 export default function Dashboard() {
   const { tasks, resolveTask } = useTasks();
-  const { getApplication } = useApplications();
+  const { applications, getApplication } = useApplications();
   const [taskModalOpen, setTaskModalOpen] = useState(false);
+
+  // Live stats from the real applications data (archived excluded).
+  const apps = applications.filter((a) => !a.archived);
+  const stats = [
+    { label: 'Total Applications', value: apps.length },
+    {
+      label: 'Active',
+      value: apps.filter((a) => ACTIVE_STATUSES.includes(a.status)).length,
+    },
+    { label: 'Offers', value: apps.filter((a) => a.status === 'Offer').length },
+    {
+      label: 'Rejected',
+      value: apps.filter((a) => a.status === 'Rejected').length,
+    },
+  ];
 
   // Open (non-archived) tasks, soonest due first.
   const openTasks = tasks
@@ -23,7 +40,7 @@ export default function Dashboard() {
     <div className="space-y-10">
       {/* Stats */}
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {dashboardStats.map((stat) => (
+        {stats.map((stat) => (
           <StatTile key={stat.label} value={stat.value} label={stat.label} />
         ))}
       </section>
@@ -37,7 +54,11 @@ export default function Dashboard() {
               Action Required
             </h2>
           </div>
-          <Button variant="secondary" size="sm" onClick={() => setTaskModalOpen(true)}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setTaskModalOpen(true)}
+          >
             <Plus size={16} /> New Task
           </Button>
         </div>
@@ -65,11 +86,9 @@ export default function Dashboard() {
         )}
       </section>
 
-      {/* Pipeline chart (placeholder) */}
+      {/* Activity */}
       <section>
-        <div className="flex min-h-[240px] items-center justify-center rounded-xl border-2 border-dashed border-border text-sm text-subtle">
-          Application Pipeline Graph Placeholder
-        </div>
+        <ActivityChart />
       </section>
 
       <TaskModal open={taskModalOpen} onClose={() => setTaskModalOpen(false)} />

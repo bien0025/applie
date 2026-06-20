@@ -5,12 +5,19 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  // A friendly heads-up in the console rather than a hard crash during setup.
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+if (!isSupabaseConfigured) {
+  // Friendly heads-up — auth calls will fail (gracefully) until you fill .env.
   console.warn(
     '[Applie] Supabase env vars are missing. Add VITE_SUPABASE_URL and ' +
-      'VITE_SUPABASE_ANON_KEY to your .env file.'
+      'VITE_SUPABASE_ANON_KEY to your .env file, then restart the dev server.'
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Use placeholders if env vars are missing so createClient doesn't throw.
+// Network calls will fail until real values are present.
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-anon-key'
+);

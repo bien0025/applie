@@ -34,13 +34,13 @@ export default function TaskModal({ open, onClose }) {
     onClose();
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.title.trim()) {
       setError('Give your task a title.');
       return;
     }
 
-    addTask({
+    const created = await addTask({
       title: form.title.trim(),
       notes: form.notes.trim(),
       applicationId: form.applicationId || null,
@@ -48,6 +48,10 @@ export default function TaskModal({ open, onClose }) {
       remindPreset: form.remindPreset,
       remindAt: computeRemindAt(form.dueAt, form.remindPreset, form.remindExact),
     });
+    if (!created) {
+      setError('Could not save the task. Please try again.');
+      return;
+    }
     close();
   };
 

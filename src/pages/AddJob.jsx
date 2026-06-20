@@ -7,12 +7,19 @@ import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Textarea from '../components/ui/Textarea';
 import Divider from '../components/ui/Divider';
-import AiGrabCard from '../components/jobs/AiGrabCard';
+import InstallExtensionCard from '../components/jobs/InstallExtensionCard';
 import { useApplications } from '../context/ApplicationsContext';
 import { STATUSES } from '../constants/status';
-import { aiGrabSamples } from '../data/aiGrabSamples';
 
-const EMPTY = { company: '', role: '', url: '', status: 'Applied', notes: '' };
+const EMPTY = {
+  company: '',
+  role: '',
+  salary: '',
+  location: '',
+  url: '',
+  status: 'Applied',
+  notes: '',
+};
 
 export default function AddJob() {
   const navigate = useNavigate();
@@ -23,14 +30,7 @@ export default function AddJob() {
   const update = (field) => (e) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  // Simulate the extension parsing a job post into the form.
-  const handleGrab = () => {
-    const sample = aiGrabSamples[Math.floor(Math.random() * aiGrabSamples.length)];
-    setForm({ ...EMPTY, ...sample });
-    setErrors({});
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const next = {};
     if (!form.company.trim()) next.company = 'Company name is required.';
@@ -38,21 +38,25 @@ export default function AddJob() {
     setErrors(next);
     if (Object.keys(next).length) return;
 
-    addApplication({
+    const created = await addApplication({
       company: form.company.trim(),
       role: form.role.trim(),
+      salary: form.salary.trim(),
+      location: form.location.trim(),
       url: form.url.trim(),
       status: form.status,
       notes: form.notes.trim(),
     });
-    navigate('/applications');
+    // Only navigate on success — if the insert failed (network/RLS) we stay
+    // on the form so the user can retry.
+    if (created) navigate('/applications');
   };
 
   return (
     <>
       <PageHeader title="Add New Application" />
 
-      <AiGrabCard onGrab={handleGrab} />
+      <InstallExtensionCard />
 
       <Divider label="OR ENTER MANUALLY" className="my-8" />
 
@@ -72,6 +76,21 @@ export default function AddJob() {
               value={form.role}
               onChange={update('role')}
               error={errors.role}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <Input
+              label="Yearly Salary"
+              placeholder="e.g. $160k"
+              value={form.salary}
+              onChange={update('salary')}
+            />
+            <Input
+              label="Location"
+              placeholder="e.g. Remote, Hybrid, or San Francisco"
+              value={form.location}
+              onChange={update('location')}
             />
           </div>
 

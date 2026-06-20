@@ -6,7 +6,7 @@ import ResumeRow from '../components/resume/ResumeRow';
 import { useResumes } from '../context/ResumesContext';
 
 export default function ResumeVault() {
-  const { resumes, addResume, deleteResume } = useResumes();
+  const { resumes, addResume, deleteResume, getSignedUrl } = useResumes();
   const [params] = useSearchParams();
   const focusId = params.get('focus');
 
@@ -17,27 +17,23 @@ export default function ResumeVault() {
     }
   }, [focusId]);
 
-  // Trigger a real browser download for resumes we have the File for
-  // (uploaded this session). Seed data has no file blob — no-op.
-  const handleDownload = (resume) => {
-    if (!resume.file) return;
-    const url = URL.createObjectURL(resume.file);
+  // Fetch a short-lived URL from Storage, then trigger a real browser download.
+  const handleDownload = async (resume) => {
+    const url = await getSignedUrl(resume);
+    if (!url) return;
     const a = document.createElement('a');
     a.href = url;
     a.download = resume.fileName;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   // Open the resume in a new tab — browsers render PDFs inline.
-  const handleView = (resume) => {
-    if (!resume.file) return;
-    const url = URL.createObjectURL(resume.file);
+  const handleView = async (resume) => {
+    const url = await getSignedUrl(resume);
+    if (!url) return;
     window.open(url, '_blank', 'noopener,noreferrer');
-    // Revoke after a minute so the new tab has time to load the file.
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
   };
 
   return (

@@ -1,21 +1,19 @@
-import { Briefcase } from 'lucide-react';
-import { cn } from '../../lib/cn';
-
-// Applie mark + wordmark. The wordmark fades out when the sidebar collapses.
+// Applie brand mark. When the sidebar is COLLAPSED we show the logo image
+// (it's a recognizable square in the rail). When it's OPEN we swap to the
+// Allura wordmark so the brand reads as text. Either way, just one element.
 export default function Logo({ expanded = true }) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent text-white">
-        <Briefcase size={18} strokeWidth={2.5} />
-      </span>
-      <span
-        className={cn(
-          'whitespace-nowrap text-xl font-semibold tracking-tight text-primary transition-opacity duration-200',
-          expanded ? 'opacity-100' : 'opacity-0'
-        )}
-      >
+  if (expanded) {
+    return (
+      <span className="whitespace-nowrap font-display text-4xl leading-none text-primary">
         Applie
       </span>
-    </div>
+    );
+  }
+  return (
+    <img
+      src="/applie-logo.png"
+      alt="Applie"
+      className="h-9 w-9 shrink-0 rounded-lg"
+    />
   );
 }

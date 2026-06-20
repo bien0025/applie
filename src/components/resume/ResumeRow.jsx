@@ -14,9 +14,9 @@ function formatLongDate(iso) {
 }
 
 // A row in the Saved Resumes list: file icon, name, meta, download + delete.
-// Clicking the row opens the file in a new tab when we have it.
+// Clicking the row opens the file in a new tab.
 export default function ResumeRow({ resume, onView, onDownload, onDelete, highlighted, rowRef }) {
-  const isViewable = Boolean(resume.file);
+  const isViewable = Boolean(resume.storagePath || resume.file);
 
   return (
     <div

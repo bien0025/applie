@@ -1,64 +1,133 @@
-import { createContext, useContext, useState } from 'react';
-import { isoDaysFromNow } from '../lib/dates';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
+import { useAuth } from './AuthContext';
 
 const TasksContext = createContext(null);
 
-/*
-  In-memory tasks store (seeded with sample data) so we can build the UI now.
-  When Supabase is connected, swap the bodies for calls into src/lib/tasks.js —
-  the component API stays the same. `archived` is a flag; we never delete.
-*/
-function seedTasks() {
-  return [
-    {
-      id: 't1', title: 'Follow up on Take-home', notes: '', applicationId: 'a1',
-      dueAt: isoDaysFromNow(0), remindPreset: 'morning_of', remindAt: isoDaysFromNow(0, 9),
-      status: 'open', archived: false,
-    },
-    {
-      id: 't2', title: 'Send Thank You email', notes: '', applicationId: 'a2',
-      dueAt: isoDaysFromNow(1), remindPreset: '1d_before', remindAt: isoDaysFromNow(0),
-      status: 'open', archived: false,
-    },
-    {
-      id: 't3', title: 'Prep for Final Round', notes: '', applicationId: 'a3',
-      dueAt: isoDaysFromNow(2), remindPreset: '1d_before', remindAt: isoDaysFromNow(1),
-      status: 'open', archived: false,
-    },
-  ];
+// Postgres row (snake_case) → UI shape (camelCase).
+function fromRow(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    notes: row.notes || '',
+    applicationId: row.application_id || null,
+    dueAt: row.due_at || null,
+    remindPreset: row.remind_preset,
+    remindAt: row.remind_at || null,
+    status: row.status,
+    archived: row.archived,
+  };
 }
 
 export function TasksProvider({ children }) {
-  const [tasks, setTasks] = useState(seedTasks);
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Re-load whenever the signed-in user changes (sign in / out).
+  useEffect(() => {
+    if (user === undefined) return; // auth still loading
+    if (!user) {
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    supabase
+      .from('tasks')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('[Applie] Failed to load tasks:', error);
+          setTasks([]);
+        } else {
+          setTasks(data.map(fromRow));
+        }
+        setLoading(false);
+      });
+  }, [user]);
 
   const patch = (id, changes) =>
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...changes } : t)));
 
-  const addTask = (task) =>
-    setTasks((prev) => [
-      {
-        id: crypto.randomUUID(),
-        status: 'open',
-        archived: false,
-        createdAt: new Date().toISOString(),
-        ...task,
-      },
-      ...prev,
-    ]);
+  const addTask = async (task) => {
+    if (!user) return null;
+    const row = {
+      user_id: user.id,
+      title: task.title,
+      notes: task.notes || null,
+      application_id: task.applicationId || null,
+      due_at: task.dueAt || null,
+      remind_preset: task.remindPreset || 'none',
+      remind_at: task.remindAt || null,
+    };
+    const { data, error } = await supabase
+      .from('tasks')
+      .insert(row)
+      .select()
+      .single();
+    if (error) {
+      console.error('[Applie] Failed to add task:', error);
+      return null;
+    }
+    const newTask = fromRow(data);
+    setTasks((prev) => [newTask, ...prev]);
+    return newTask;
+  };
 
-  const resolveTask = (id) => patch(id, { status: 'done' }); // dashboard "Resolve"
-  const toggleTask = (id) =>
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, status: t.status === 'done' ? 'open' : 'done' } : t
-      )
-    );
-  const archiveTask = (id) => patch(id, { archived: true });
-  const restoreTask = (id) => patch(id, { archived: false });
+  // Dashboard "Resolve" button — always sets to done.
+  const resolveTask = async (id) => {
+    patch(id, { status: 'done' });
+    const { error } = await supabase
+      .from('tasks')
+      .update({ status: 'done' })
+      .eq('id', id);
+    if (error) console.error('[Applie] Failed to resolve task:', error);
+  };
+
+  // Tasks page circle — toggles between open and done.
+  const toggleTask = async (id) => {
+    const current = tasks.find((t) => t.id === id);
+    if (!current) return;
+    const newStatus = current.status === 'done' ? 'open' : 'done';
+    patch(id, { status: newStatus });
+    const { error } = await supabase
+      .from('tasks')
+      .update({ status: newStatus })
+      .eq('id', id);
+    if (error) console.error('[Applie] Failed to toggle task:', error);
+  };
+
+  const archiveTask = async (id) => {
+    patch(id, { archived: true });
+    const { error } = await supabase
+      .from('tasks')
+      .update({ archived: true })
+      .eq('id', id);
+    if (error) console.error('[Applie] Failed to archive task:', error);
+  };
+
+  const restoreTask = async (id) => {
+    patch(id, { archived: false });
+    const { error } = await supabase
+      .from('tasks')
+      .update({ archived: false })
+      .eq('id', id);
+    if (error) console.error('[Applie] Failed to restore task:', error);
+  };
 
   return (
     <TasksContext.Provider
-      value={{ tasks, addTask, resolveTask, toggleTask, archiveTask, restoreTask }}
+      value={{
+        tasks,
+        loading,
+        addTask,
+        resolveTask,
+        toggleTask,
+        archiveTask,
+        restoreTask,
+      }}
     >
       {children}
     </TasksContext.Provider>

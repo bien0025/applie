@@ -4,6 +4,7 @@ import {
   ListTodo,
   PlusCircle,
   FileText,
+  Sparkles,
   Archive,
   Settings,
 } from 'lucide-react';
@@ -16,6 +17,7 @@ export const NAV_ITEMS = [
   { label: 'Tasks', path: '/tasks', icon: ListTodo },
   { label: 'Add Job', path: '/add', icon: PlusCircle },
   { label: 'Resume Vault', path: '/resumes', icon: FileText },
+  { label: 'Tailor', path: '/tailor', icon: Sparkles },
   { label: 'Archived', path: '/archived', icon: Archive },
   { label: 'Settings', path: '/settings', icon: Settings },
 ];

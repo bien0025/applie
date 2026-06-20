@@ -9,6 +9,8 @@ export default {
         sans: ['Fraunces', 'serif'],
         // Micro-labels: eyebrows, badges, meta, stat labels
         ui: ['system-ui', 'sans-serif'],
+        // Brand wordmark (Allura — matches the cursive A in the logo)
+        display: ['Allura', 'cursive'],
       },
 
       colors: {
