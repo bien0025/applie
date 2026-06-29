@@ -11,13 +11,14 @@ import { Analytics } from "@vercel/analytics/react"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+                  <Analytics />
+
     <ThemeProvider>
       <AuthProvider>
         <ApplicationsProvider>
           <TasksProvider>
             <ResumesProvider>
               <App />
-              <Analytics />
 
             </ResumesProvider>
           </TasksProvider>
