@@ -16,6 +16,7 @@ import VerifyEmail from './pages/VerifyEmail';
 import Privacy from './pages/Privacy';
 import About from './pages/About';
 
+
 export default function App() {
   return (
     <BrowserRouter>

@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ApplicationsProvider } from './context/ApplicationsContext';
 import { TasksProvider } from './context/TasksContext';
 import { ResumesProvider } from './context/ResumesContext';
+import { Analytics } from "@vercel/analytics/react"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -16,6 +17,8 @@ createRoot(document.getElementById('root')).render(
           <TasksProvider>
             <ResumesProvider>
               <App />
+              <Analytics />
+
             </ResumesProvider>
           </TasksProvider>
         </ApplicationsProvider>
