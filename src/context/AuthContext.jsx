@@ -39,6 +39,15 @@ export function AuthProvider({ children }) {
   const resendConfirmation = (email) =>
     supabase.auth.resend({ type: 'signup', email });
 
+  // OAuth Sign In - Updated with the redirectTo origin
+  const signInWithOAuth = ({ provider }) => 
+    supabase.auth.signInWithOAuth({ 
+      provider,
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      }
+    });
+
   return (
     <AuthContext.Provider
       value={{
@@ -48,6 +57,7 @@ export function AuthProvider({ children }) {
         signUp,
         signOut,
         resendConfirmation,
+        signInWithOAuth,
       }}
     >
       {children}
