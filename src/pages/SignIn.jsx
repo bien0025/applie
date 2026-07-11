@@ -43,7 +43,6 @@ export default function SignIn() {
 
   return (
     <AuthLayout title="Sign in" subtitle="Welcome back to Applie.">
-                    <ThemeToggle expanded={isOpen} />
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
